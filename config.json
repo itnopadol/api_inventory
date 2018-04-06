@@ -1,0 +1,8 @@
+{
+  "_comment": "Actual deploy use db_host: nopadol.net:3306",
+  "db_host": "nebula.nopadol.com",
+  "db_name": "npmaster",
+  "db_user": "sa",
+  "db_pass": "[ibdkifu",
+  "port": "1433"
+}

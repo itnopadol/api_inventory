@@ -2,7 +2,7 @@ package model
 
 import (
 	"github.com/jmoiron/sqlx"
-	"fmt"
+	//"fmt"
 	//"golang.org/x/tools/go/gcimporter15/testdata"
 )
 
@@ -19,7 +19,7 @@ type Label struct{
 	LabelTypeName string `json:"label_type_name,omitempty" db:"label_type_name"`
 	CreatorCode string `json:"creator_code,omitempty" db:"creator_code"`
 	CreateDatetime string `json:"create_datetime,omitempty" db:"create_datetime"`
-	IsUsed int64 `json:"is_used,omitempty" db:"is_used"`
+	IsUsed float64 `json:"is_used,omitempty" db:"is_used"`
 }
 
 func(l *Label)GetByUser(keyword string,db *sqlx.DB)(ls []*Label,err error){
@@ -46,19 +46,23 @@ func(l *Label)GetByUser(keyword string,db *sqlx.DB)(ls []*Label,err error){
 			,a.datetimestamp as create_datetime
 			,a.isused as is_used
 	from	npmaster.dbo.TB_NP_ItemDataOfflineCenter a
-		left join dbo.bcitem b on a.itemcode = b.code 
+		left join bcnp.dbo.bcitem b on a.itemcode = b.code 
 		left join npmaster.dbo.TB_PM_Label c on left(a.LabelType,2)=c.LabSize and c.LabUsed = 1
 		left join npmaster.dbo.TB_PM_Label d on right(a.LabelType,2)=d.LabForm and c.LabUsed = 1
-	where jobid = 4 and a.creatorcode = '56163' and isused = 0
+	where jobid = 4 and a.creatorcode = ? and isused = 0
 	group by a.itemcode,isnull(a.barcode,''),a.qty,a.unitcode,isnull(a.labeltype,''),a.datetimestamp,isnull(b.name1,'')
 	,a.creatorcode,a.isused,c.LabSize,d.LabForm,b.SalePrice1
-	order by datetimestamp,a.itemcode"`
+	order by datetimestamp,a.itemcode`
 
-	err = db.Select(&ls, lcCommand)
+	//fmt.Println(lcCommand) 
+
+	err = db.Select(&ls,lcCommand,keyword)
+	//fmt.Println("CMD",lcCommand,keyword)
 	if err !=nil{
-	return nil,err
+		return nil,err
 	}
-	fmt.Println(ls) 
+
+
 	return ls,nil
 }
 

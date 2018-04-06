@@ -24,6 +24,7 @@ func GetLabelList(l *gin.Context){
 
 	ls,err := label.GetByUser(keyword,dbc)
 	if err != nil{
+		fmt.Println("1")
 		log.Println(err.Error())
 	}
 	rs := api.Response{}
@@ -33,7 +34,7 @@ func GetLabelList(l *gin.Context){
 		l.JSON(http.StatusNotFound, rs)
 	} else {
 		if ls==nil{
-			//fmt.Println("Yes")
+			fmt.Println("2")
 			rs.Status = "error"
 			rs.Message = "No Content: NotData"
 			l.JSON(http.StatusNotFound, rs)
