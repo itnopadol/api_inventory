@@ -57,7 +57,7 @@ func(l *Label)GetByUser(keyword string,db *sqlx.DB)(ls []*Label,err error){
 	err = db.Select(&ls, lcCommand)
 	if err !=nil{
 	return nil,err
-	}``
+	}
 	fmt.Println(ls) 
 	return ls,nil
 }
