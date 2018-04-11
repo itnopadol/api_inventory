@@ -72,7 +72,7 @@ func(l *Label)GetByUser(keyword string,db *sqlx.DB)(ls []*Label,err error){
 		left join npmaster.dbo.TB_PM_Label d on right(a.LabelType,2)=d.LabForm and c.LabUsed = 1
 	where jobid = 4 and a.creatorcode = ? and isused = 0
 	group by a.itemcode,isnull(a.barcode,''),a.qty,a.unitcode,isnull(a.labeltype,''),a.datetimestamp,isnull(b.name1,'')
-	,a.creatorcode,a.isused,c.LabSize,d.LabForm,b.SalePrice1
+	,a.creatorcode,a.isused,c.LabSize,d.LabForm,b.SalePrice1,a.RowOrder
 	order by a.RowOrder desc`
 
 	//fmt.Println(lcCommand) 
