@@ -45,3 +45,54 @@ func GetLabelList(l *gin.Context){
 		}
 	}
 }
+
+func LabelSave(c *gin.Context){
+	log.Println("call Post LabelSave")
+	c.Keys=headerKeys
+
+	fmt.Println("Ctrl.LabelSave")
+	//pjc := &model.ProjectCard{}
+	lc := lc.InsertLabel{}
+	rs := api.Response{}
+		if err := c.BindJSON(&lc); err != nil{
+			fmt.Println(lc)
+			log.Println("Error Decode(&lc) >>", err)
+			rs.Status = "fail"
+			rs.Message = err.Error()
+			c.JSON(http.StatusOK,rs)
+
+		}else{
+			fmt.Println("ID = ",lc.JobID)
+			//fmt.Println("Check Status = ", pjc.CheckExists())
+			if lc.CheckExists(dbc,lc.ItemCode,lc.BarCode,lc.UnitCode,lc.LabelType,lc.CreatorCode) != 0 {
+				//  มีรายการแล้ว
+				updateProject,err := lc.Update(dbc)
+				fmt.Println("<---------------update1")
+				fmt.Println(lc.JobID)
+				if err != nil {
+					fmt.Println("Error Update DB:", err)
+					rs.Status = "fail"
+					rs.Message = "Error Update Label :"+err.Error()
+					c.JSON(http.StatusBadRequest,rs)
+					return
+				}
+					rs.Status = "success"
+					rs.Data = updateProject
+			}else{
+				newProject,err := lc.Insert(dbc)
+				fmt.Println("<---------------Start insert Label")
+				fmt.Println(lc.JobID)
+				if err != nil {
+					fmt.Println("Error Insert DB:", err)
+					rs.Status = "fail"
+					rs.Message = "Error Insert Label :"+err.Error()
+					c.JSON(http.StatusBadRequest,rs)
+					return
+			}
+				rs.Status = "success"
+				rs.Data = newProject
+			}			
+		}		
+	rs.Status="success"
+	c.JSON(http.StatusOK,rs)
+}

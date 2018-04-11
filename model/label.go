@@ -2,7 +2,7 @@ package model
 
 import (
 	"github.com/jmoiron/sqlx"
-	//"fmt"
+	"fmt"
 	//"golang.org/x/tools/go/gcimporter15/testdata"
 )
 
@@ -22,6 +22,27 @@ type Label struct{
 	IsUsed float64 `json:"is_used,omitempty" db:"is_used"`
 }
 
+type InsertLabel struct{
+	JobID int64 
+	ItemCode string `json:"ItemCode" db:"ItemCode"`
+	BarCode string `json:"BarCode" db:"BarCode"`
+	Qty float64 `json:"Qty" db:"Qty"`
+	ReOrder float64 `json:"ReOrder" db:"ReOrder"`
+	Suggest float64 `json:"Suggest" db:"Suggest"`
+	WHCode string `json:"WHCode" db:"WHCode"`
+	ZoneID string `json:"ZoneID" db:"ZoneID"`
+	ShelfCode string `json:"ShelfCode" db:"ShelfCode"`
+	RowID string `json:"RowID" db:"RowID"`
+	ShelfID string `json:"ShelfID" db:"ShelfID"`
+	Price float64 `json:"Price" db:"Price"`
+	LabelType string `json:"LabelType" db:"LabelType"`
+	DateTimeStamp string `json:"DateTimeStamp" db:"DateTimeStamp"`
+	CreatorCode string `json:"CreatorCode" db:"CreatorCode"`
+	CreateDateTime string `json:"CreateDateTime" db:"CreateDateTime"`
+	PathFileName string `json:"PathFileName" db:"PathFileName"`
+	UnitCode string `json:"unitcode" db:"unitcode"`
+	ReasonCode string `json:"reasoncode" db:"reasoncode"`
+}
 func(l *Label)GetByUser(keyword string,db *sqlx.DB)(ls []*Label,err error){
 	lcCommand := `select	
 			a.itemcode as item_code
@@ -64,5 +85,77 @@ func(l *Label)GetByUser(keyword string,db *sqlx.DB)(ls []*Label,err error){
 
 
 	return ls,nil
+}
+
+func(il *InsertLabel)CheckExists(db *sqlx.DB, itemcode string, barcode string, unitcode string, labeltype string, CreatorCode string) int {
+	var chkRow int 
+	fmt.Println("Begin CheckExists")
+	lccommand := `select isnull(count(itemcode),0) as vCount 
+					from npmaster.dbo.TB_NP_ItemDataOfflineCenter 
+				  where jobid = 4 and isused = 0 and itemcode = ? and barcode = ? 
+				  and unitcode = ? and labeltype = ? and CreatorCode = ?`
+	err := db.Get(&chkRow, lccommand, itemcode,barcode,unitcode,labeltype,CreatorCode)
+	if err !=nil{
+		return 0
+	}
+	//chkRow, _ := rs.RowsAffected()
+	fmt.Println("itemcode",itemcode,barcode,unitcode,labeltype,CreatorCode,chkRow)
+	// if chkRow > 0 {
+	// 	fmt.Println("data aleady exists!!! cannot insert this number : ", pj.Code)
+	// 	return 1	
+	// }
+	return chkRow
+}
+
+
+func (il *InsertLabel)Insert(db *sqlx.DB) (NewProject string, err error) {
+
+	lccommand := `set dateformat dmy
+		INSERT INTO nebula.npmaster.dbo.TB_NP_ItemDataOfflineCenter
+		(JobID
+		,ItemCode
+		,BarCode
+		,Qty
+		,ReOrder
+		,Suggest
+		,WHCode
+		,ZoneID
+		,ShelfCode
+		,RowID
+		,ShelfID
+		,Price
+		,LabelType
+		,DateTimeStamp
+		,CreatorCode
+		,CreateDateTime
+		,PathFileName
+		,UnitCode
+		,ReasonCode) 
+	VALUES (4,?,?,?,0,0,'','','','','',?,?
+			,cast(rtrim(day(getdate()))+'/'+rtrim(month(getdate()))+'/'+rtrim(year(getdate())) as datetime)
+			,?,getdate(),'',?,'Mobile App')`
+	_, err = db.Exec(lccommand,il.ItemCode,il.BarCode,il.Qty,il.Price,il.LabelType,il.CreatorCode,il.UnitCode)
+	fmt.Println(lccommand)
+	if err != nil {
+		return il.ItemCode, err
+	}
+	return il.ItemCode+" Completed Insert", err
+}
+
+func(il *InsertLabel)Update(db *sqlx.DB) (msg string, err error) {
+	// Update Project
+	lccommand := `set dateformat dmy 
+				update nebula.npmaster.dbo.TB_NP_ItemDataOfflineCenter 
+				set	qty = ? 
+				where jobid = 4 and itemcode = ? and barcode = ? and unitcode = ? and labeltype = ?`
+			
+	_, err = db.Exec(lccommand,il.Qty,il.ItemCode,il.BarCode,il.UnitCode,il.LabelType)
+	if err != nil {
+		msg = "Update Error "
+		return msg, err
+		}
+		fmt.Println("CMD",lccommand)
+	msg = "Completed updated"
+	return msg, err
 }
 

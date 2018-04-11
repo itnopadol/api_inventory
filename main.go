@@ -16,6 +16,7 @@ func main() {
 
 	// pjc
 	app.GET("/labels", ctrl.GetLabelList)
+	app.POST("/label", ctrl.LabelSave)
 
 	app.Run(":9010")
 }
