@@ -159,3 +159,20 @@ func(il *InsertLabel)Update(db *sqlx.DB) (msg string, err error) {
 	return msg, err
 }
 
+func(il *InsertLabel)Cancel(db *sqlx.DB) (msg string, err error) {
+	// Update Project
+	lccommand := `set dateformat dmy 
+				update nebula.npmaster.dbo.TB_NP_ItemDataOfflineCenter 
+				set	isused = 1
+				where jobid = 4 and itemcode = ? and barcode = ? and unitcode = ? and labeltype = ? and CreatorCode = ?`
+			
+	_, err = db.Exec(lccommand,il.ItemCode,il.BarCode,il.UnitCode,il.LabelType,il.CreatorCode)
+	if err != nil {
+		msg = "Cancel Error "
+		return msg, err
+		}
+		fmt.Println("CMD",lccommand)
+	msg = "Completed cencel"
+	return msg, err
+}
+
