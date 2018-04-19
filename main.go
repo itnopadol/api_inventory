@@ -19,5 +19,8 @@ func main() {
 	app.POST("/label", ctrl.LabelSave)
 	app.POST("/labelcancel", ctrl.LabelCancel)
 
+	//promotion
+	app.GET("/requests", ctrl.GetRequestList)
+
 	app.Run(":9010")
 }
