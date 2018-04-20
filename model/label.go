@@ -45,15 +45,15 @@ type InsertLabel struct{
 }
 func(l *Label)GetByUser(keyword string,db *sqlx.DB)(ls []*Label,err error){
 	lcCommand := `select	
-			a.itemcode as item_code
+			isnull(a.itemcode,'') as item_code
 			,isnull(a.barcode,'') as bar_code
 			,isnull(b.name1,'') as item_name
-			,a.unitcode as unit_code
-			,b.SalePrice1 as price
-			,a.qty
+			,isnull(a.unitcode,'') as unit_code
+			,isnull(b.SalePrice1,'') as price
+			,isnull(a.qty,0) as qty
 			,isnull(a.labeltype,'') as label_type
-			,c.LabSize as lab_size
-			,d.LabForm as lab_from
+			,isnull(c.LabSize,'') as lab_size
+			,isnull(d.LabForm,'') as lab_from
 			,case when d.LabForm='F1'and c.LabSize='P1' then 'ป้ายธรรมดา 21 ดวง/หน้า'
 				  when d.LabForm='F1'and c.LabSize='P2' then 'ป้ายธรรมดา 3 ดวง/หน้า'
 				  when d.LabForm='F1'and c.LabSize='P3' then 'ป้ายธรรมดา 2 ดวง/หน้า'
@@ -63,9 +63,9 @@ func(l *Label)GetByUser(keyword string,db *sqlx.DB)(ls []*Label,err error){
 				  when d.LabForm='F2'and c.LabSize='P3' then 'ป้ายราคาพิเศษ 2 ดวง/หน้า'
 				  when d.LabForm='F2'and c.LabSize='P4' then 'ป้ายราคาพิเศษ A4'
 			else 'อื่นๆ' end as label_type_name
-			,a.creatorcode as creator_code
-			,a.datetimestamp as create_datetime
-			,a.isused as is_used
+			,isnull(a.creatorcode,'') as creator_code
+			,isnull(a.datetimestamp,'') as create_datetime
+			,isnull(a.isused,0) as is_used
 	from	npmaster.dbo.TB_NP_ItemDataOfflineCenter a
 		left join bcnp.dbo.bcitem b on a.itemcode = b.code 
 		left join npmaster.dbo.TB_PM_Label c on left(a.LabelType,2)=c.LabSize and c.LabUsed = 1
