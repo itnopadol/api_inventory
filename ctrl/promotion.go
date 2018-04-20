@@ -15,14 +15,14 @@ func GetRequestList(c *gin.Context){
 	log.Println("call GET Request List")
 	c.Keys=headerKeys
 	access_token := c.Request.URL.Query().Get("access_token")
-	//keyword :=c.Request.URL.Query().Get("keyword")
+	keyword :=c.Request.URL.Query().Get("keyword")
 
 	fmt.Println("access_token = ",access_token)
 	request := md.Request{}
 
-	//fmt.Println("call Label.GetRequestList :",keyword)
+	fmt.Println("call Label.GetRequestList :",keyword)
 
-	rqs,err := request.GetByKeyWordRequest(dbc)
+	rqs,err := request.GetByKeyWordRequest(keyword,dbc)
 	if err != nil{
 		fmt.Println("111")
 		log.Println(err.Error())
