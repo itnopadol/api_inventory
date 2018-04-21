@@ -16,13 +16,14 @@ func GetLabelList(l *gin.Context){
 	l.Keys=headerKeys
 	access_token := l.Request.URL.Query().Get("access_token")
 	keyword :=l.Request.URL.Query().Get("keyword")
+	branch :=l.Request.URL.Query().Get("branch")
 
 	fmt.Println("access_token = ",access_token)
 	label := lc.Label{}
 
-	fmt.Println("call Label.GetLabelList :",keyword)
+	fmt.Println("call Label.GetLabelList :",keyword,branch)
 
-	ls,err := label.GetByUser(keyword,dbc)
+	ls,err := label.GetByUser(keyword,branch,dbc)
 	if err != nil{
 		fmt.Println("1")
 		log.Println(err.Error())
@@ -64,7 +65,7 @@ func LabelSave(c *gin.Context){
 		}else{
 			fmt.Println("ID = ",lc.JobID)
 			//fmt.Println("Check Status = ", pjc.CheckExists())
-			if lc.CheckExists(dbc,lc.ItemCode,lc.BarCode,lc.UnitCode,lc.LabelType,lc.CreatorCode) != 0 {
+			if lc.CheckExists(dbc,lc.Branch,lc.ItemCode,lc.BarCode,lc.UnitCode,lc.LabelType,lc.CreatorCode) != 0 {
 				//  มีรายการแล้ว
 				updateProject,err := lc.Update(dbc)
 				fmt.Println("<---------------update1")
@@ -115,7 +116,7 @@ func LabelCancel(c *gin.Context){
 		}else{
 			fmt.Println("ID = ",lc.ItemCode)
 			//fmt.Println("Check Status = ", pjc.CheckExists())
-			if lc.CheckExists(dbc,lc.ItemCode,lc.BarCode,lc.UnitCode,lc.LabelType,lc.CreatorCode) != 0 {
+			if lc.CheckExists(dbc,lc.Branch,lc.ItemCode,lc.BarCode,lc.UnitCode,lc.LabelType,lc.CreatorCode) != 0 {
 				//  มีรายการแล้ว
 				LabelCancel,err := lc.Cancel(dbc)
 				fmt.Println("<---------------Cancel")
