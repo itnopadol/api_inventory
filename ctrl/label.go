@@ -63,9 +63,9 @@ func LabelSave(c *gin.Context){
 			c.JSON(http.StatusOK,rs)
 
 		}else{
-			fmt.Println("ID = ",lc.JobID)
+			fmt.Println("ID = ",lc.CheckExists)
 			//fmt.Println("Check Status = ", pjc.CheckExists())
-			if lc.CheckExists(dbc,lc.Branch,lc.ItemCode,lc.BarCode,lc.UnitCode,lc.LabelType,lc.CreatorCode) != 0 {
+			if lc.CheckExists(dbc,lc.ItemCode,lc.BarCode,lc.UnitCode,lc.LabelType,lc.CreatorCode) != 0 {
 				//  มีรายการแล้ว
 				updateProject,err := lc.Update(dbc)
 				fmt.Println("<---------------update1")
@@ -82,7 +82,7 @@ func LabelSave(c *gin.Context){
 			}else{
 				newProject,err := lc.Insert(dbc)
 				fmt.Println("<---------------Start insert Label")
-				fmt.Println(lc.JobID)
+				fmt.Println(dbc)
 				if err != nil {
 					fmt.Println("Error Insert DB:", err)
 					rs.Status = "fail"
@@ -116,7 +116,7 @@ func LabelCancel(c *gin.Context){
 		}else{
 			fmt.Println("ID = ",lc.ItemCode)
 			//fmt.Println("Check Status = ", pjc.CheckExists())
-			if lc.CheckExists(dbc,lc.Branch,lc.ItemCode,lc.BarCode,lc.UnitCode,lc.LabelType,lc.CreatorCode) != 0 {
+			if lc.CheckExists(dbc,lc.ItemCode,lc.BarCode,lc.UnitCode,lc.LabelType,lc.CreatorCode) != 0 {
 				//  มีรายการแล้ว
 				LabelCancel,err := lc.Cancel(dbc)
 				fmt.Println("<---------------Cancel")

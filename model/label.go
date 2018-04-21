@@ -95,28 +95,34 @@ func(l *Label)GetByUser(keyword string,branch string,db *sqlx.DB)(ls []*Label,er
 	return ls,nil
 }
 
-func(il *InsertLabel)CheckExists(db *sqlx.DB,branch string, itemcode string, barcode string, unitcode string, labeltype string, CreatorCode string) int {
+func(il *InsertLabel)CheckExists(db *sqlx.DB, itemcode string, barcode string, unitcode string, labeltype string, CreatorCode string) int {
 	var chkRow int 
-	if branch == "S01"{
-		branch = "NEBULA"
-	}else {
-		branch = "S02DB"
-	}
+	if il.Branch == "S01"{
 	fmt.Println("Begin CheckExists")
-	lccommand := "select isnull(count(itemcode),0) as vCount"+
-					" from "+branch+".npmaster.dbo.TB_NP_ItemDataOfflineCenter"+ 
-				  " where jobid = 4 and isused = 0 and itemcode = '"+itemcode+"' and barcode = '"+barcode+"'"+ 
-				  " and unitcode = '"+unitcode+"' and labeltype = '"+labeltype+"' and CreatorCode = '"+CreatorCode+"'"
-	err := db.Get(&chkRow, lccommand,branch, itemcode,barcode,unitcode,labeltype,CreatorCode)
+
+	lccommand := `select isnull(count(itemcode),0) as vCount
+					from nebula.npmaster.dbo.TB_NP_ItemDataOfflineCenter
+					where jobid = 4 and isused = 0 and itemcode = ? and barcode = ?
+				    and unitcode = ? and labeltype = ? and CreatorCode = ?`
+	err := db.Get(&chkRow, lccommand,itemcode,barcode,unitcode,labeltype,CreatorCode)
+	fmt.Println("Count Exist = ",chkRow)
 	if err !=nil{
 		return 0
 	}
-	//chkRow, _ := rs.RowsAffected()
-	fmt.Println("itemcode",branch,itemcode,barcode,unitcode,labeltype,CreatorCode,chkRow)
-	// if chkRow > 0 {
-	// 	fmt.Println("data aleady exists!!! cannot insert this number : ", pj.Code)
-	// 	return 1	
-	// }
+	}else {
+	fmt.Println("Begin CheckExists")
+
+	lccommand := `select isnull(count(itemcode),0) as vCount
+					from s02db.npmaster.dbo.TB_NP_ItemDataOfflineCenter
+					where jobid = 4 and isused = 0 and itemcode = ? and barcode = ?
+				    and unitcode = ? and labeltype = ? and CreatorCode = ?`
+	err := db.Get(&chkRow, lccommand,itemcode,barcode,unitcode,labeltype,CreatorCode)
+	fmt.Println("Count Exist = ",chkRow)
+	if err !=nil{
+		return 0
+	}
+}
+	//fmt.Println("itemcode",itemcode,barcode,unitcode,labeltype,CreatorCode,chkRow)
 	return chkRow
 }
 
@@ -149,7 +155,7 @@ func (il *InsertLabel)Insert(db *sqlx.DB) (NewProject string, err error) {
 			,cast(rtrim(day(getdate()))+'/'+rtrim(month(getdate()))+'/'+rtrim(year(getdate())) as datetime)
 			,?,getdate(),'',?,'Mobile App')`
 		_, err = db.Exec(lccommand,il.ItemCode,il.BarCode,il.Qty,il.Price,il.LabelType,il.CreatorCode,il.UnitCode)
-		fmt.Println(lccommand)
+		//fmt.Println(lccommand)
 		if err != nil {
 			return il.ItemCode, err
 			}
@@ -179,7 +185,7 @@ func (il *InsertLabel)Insert(db *sqlx.DB) (NewProject string, err error) {
 			,cast(rtrim(day(getdate()))+'/'+rtrim(month(getdate()))+'/'+rtrim(year(getdate())) as datetime)
 			,?,getdate(),'',?,'Mobile App')`
 		_, err = db.Exec(lccommand,il.ItemCode,il.BarCode,il.Qty,il.Price,il.LabelType,il.CreatorCode,il.UnitCode)
-		fmt.Println(lccommand)
+		//fmt.Println(lccommand)
 		if err != nil {
 			return il.ItemCode, err
 			}
