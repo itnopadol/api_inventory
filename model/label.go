@@ -97,11 +97,11 @@ func(l *Label)GetByUser(keyword string,branch string,db *sqlx.DB)(ls []*Label,er
 
 func(il *InsertLabel)CheckExists(db *sqlx.DB, itemcode string, barcode string, unitcode string, labeltype string, CreatorCode string) int {
 	var chkRow int 
-	if il.Branch == "S01"{
+	if il.Branch == "S02"{
 	fmt.Println("Begin CheckExists")
 
 	lccommand := `select isnull(count(itemcode),0) as vCount
-					from nebula.npmaster.dbo.TB_NP_ItemDataOfflineCenter
+					from S02DB.npmaster.dbo.TB_NP_ItemDataOfflineCenter
 					where jobid = 4 and isused = 0 and itemcode = ? and barcode = ?
 				    and unitcode = ? and labeltype = ? and CreatorCode = ?`
 	err := db.Get(&chkRow, lccommand,itemcode,barcode,unitcode,labeltype,CreatorCode)
@@ -113,7 +113,7 @@ func(il *InsertLabel)CheckExists(db *sqlx.DB, itemcode string, barcode string, u
 	fmt.Println("Begin CheckExists")
 
 	lccommand := `select isnull(count(itemcode),0) as vCount
-					from s02db.npmaster.dbo.TB_NP_ItemDataOfflineCenter
+					from NEBULA.npmaster.dbo.TB_NP_ItemDataOfflineCenter
 					where jobid = 4 and isused = 0 and itemcode = ? and barcode = ?
 				    and unitcode = ? and labeltype = ? and CreatorCode = ?`
 	err := db.Get(&chkRow, lccommand,itemcode,barcode,unitcode,labeltype,CreatorCode)
@@ -129,9 +129,9 @@ func(il *InsertLabel)CheckExists(db *sqlx.DB, itemcode string, barcode string, u
 
 func (il *InsertLabel)Insert(db *sqlx.DB) (NewProject string, err error) {
 
-	if il.Branch == "S01"{
+	if il.Branch == "S02"{
 		lccommand := `set dateformat dmy
-			INSERT INTO nebula.npmaster.dbo.TB_NP_ItemDataOfflineCenter
+			INSERT INTO S02DB.npmaster.dbo.TB_NP_ItemDataOfflineCenter
 			(JobID
 			,ItemCode
 			,BarCode
@@ -161,7 +161,7 @@ func (il *InsertLabel)Insert(db *sqlx.DB) (NewProject string, err error) {
 			}
 	}else {
 		lccommand := `set dateformat dmy
-			INSERT INTO s02db.npmaster.dbo.TB_NP_ItemDataOfflineCenter
+			INSERT INTO NEBULA.npmaster.dbo.TB_NP_ItemDataOfflineCenter
 			(JobID
 			,ItemCode
 			,BarCode
@@ -195,9 +195,9 @@ return il.ItemCode+" Completed Insert", err
 
 func(il *InsertLabel)Update(db *sqlx.DB) (msg string, err error) {
 	// Update Project
-	if il.Branch == "S01"{
+	if il.Branch == "S02"{
 		lccommand := `set dateformat dmy 
-				update nebula.npmaster.dbo.TB_NP_ItemDataOfflineCenter 
+				update S02DB.npmaster.dbo.TB_NP_ItemDataOfflineCenter 
 				set	qty = ? 
 				where jobid = 4 and itemcode = ? and barcode = ? and unitcode = ? and labeltype = ?`
 			
@@ -208,7 +208,7 @@ func(il *InsertLabel)Update(db *sqlx.DB) (msg string, err error) {
 		}
 	}else {
 		lccommand := `set dateformat dmy 
-				update s02db.npmaster.dbo.TB_NP_ItemDataOfflineCenter 
+				update NEBULA.npmaster.dbo.TB_NP_ItemDataOfflineCenter 
 				set	qty = ? 
 				where jobid = 4 and itemcode = ? and barcode = ? and unitcode = ? and labeltype = ?`
 			
@@ -225,9 +225,9 @@ func(il *InsertLabel)Update(db *sqlx.DB) (msg string, err error) {
 
 func(il *InsertLabel)Cancel(db *sqlx.DB) (msg string, err error) {
 	// Cancel Project
-	if il.Branch == "S01"{
+	if il.Branch == "S02"{
 		lccommand := `set dateformat dmy 
-				update nebula.npmaster.dbo.TB_NP_ItemDataOfflineCenter 
+				update S02DB.npmaster.dbo.TB_NP_ItemDataOfflineCenter 
 				set	isused = 1
 				where jobid = 4 and isused = 0 and itemcode = ? and barcode = ? and unitcode = ? and labeltype = ? and CreatorCode = ?`
 			
@@ -238,7 +238,7 @@ func(il *InsertLabel)Cancel(db *sqlx.DB) (msg string, err error) {
 		}
 	}else {
 		lccommand := `set dateformat dmy 
-				update s02db.npmaster.dbo.TB_NP_ItemDataOfflineCenter 
+				update NEBULA.npmaster.dbo.TB_NP_ItemDataOfflineCenter 
 				set	isused = 1
 				where jobid = 4 and isused = 0 and itemcode = ? and barcode = ? and unitcode = ? and labeltype = ? and CreatorCode = ?`
 			
