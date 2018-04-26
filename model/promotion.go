@@ -44,6 +44,7 @@ type Requestsub struct{
 }
 
 func(rq *Request)GetByKeyWordRequest(keyword string,db *sqlx.DB)(rqs []*Request,err error){
+	
 	lcCommand := 
 	"select top 20 isnull(DocNo,'') as doc_no"+
 		",isnull(DocDate,'') as doc_date"+
@@ -101,7 +102,6 @@ func(rq *Request)GetByKeyWordRequest(keyword string,db *sqlx.DB)(rqs []*Request,
 			return nil, err
 		}
 	}
-
 	fmt.Println("keyword : ",keyword) 
 	return rqs,nil
 }

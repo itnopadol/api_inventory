@@ -18,6 +18,7 @@ func main() {
 	app.GET("/labels", ctrl.GetLabelList)
 	app.POST("/label", ctrl.LabelSave)
 	app.POST("/labelcancel", ctrl.LabelCancel)
+	app.GET("/gendocno", ctrl.GenDocno)
 
 	//promotion
 	app.GET("/requests", ctrl.GetRequestList)
