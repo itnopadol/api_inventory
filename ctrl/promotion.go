@@ -107,3 +107,35 @@ func GetPromotionMasterList(l *gin.Context){
 		}
 	}
 }
+
+
+func GetSectionManList(l *gin.Context){
+
+	log.Println("call Get SectionMan List")
+	l.Keys=headerKeys
+
+	sectionman := md.SectionMan{}
+
+	sm,err := sectionman.GetSectionMan(dbc)
+	if err != nil{
+		fmt.Println("1")
+		log.Println(err.Error())
+	}
+	rs := api.Response{}
+	if err != nil {
+		rs.Status = "error"
+		rs.Message = "No Content: "+err.Error()
+		l.JSON(http.StatusNotFound, rs)
+	} else {
+		if sm==nil{
+			fmt.Println("2")
+			rs.Status = "error"
+			rs.Message = "No Content: NotData"
+			l.JSON(http.StatusNotFound, rs)
+		}else {
+			rs.Status = "success"
+			rs.Data =sm
+			l.JSON(http.StatusOK, rs)
+		}
+	}
+}

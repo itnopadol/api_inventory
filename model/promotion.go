@@ -66,6 +66,14 @@ type Promotionmaster struct{
 	EditDate string `json:"edit_date" db:"edit_date"`
 }
 
+type SectionMan struct{
+	SecmanCode string `json:"secman_code" db:"secman_code"`
+	SecmanName string `json:"secman_name" db:"secman_name"`
+	NameFull string `json:"name_full" db:"name_full"`
+	SaleCode string `json:"sale_code" db:"sale_code"`
+	UserId string `json:"user_id" db:"user_id"`
+}
+
 func(rq *Request)GetByKeyWordRequest(keyword string,db *sqlx.DB)(rqs []*Request,err error){
 	
 	lcCommand := 
@@ -169,6 +177,26 @@ func(pm *Promotionmaster)GetPromotionMaster(db *sqlx.DB)(pms []*Promotionmaster,
 		return nil,err
 	}
 	return pms,nil
+}
+
+func(sm *SectionMan)GetSectionMan(db *sqlx.DB)(sms []*SectionMan,err error){
+
+	lcCommand := `set dateformat dmy
+		select distinct rtrim(st.salecode)+'/'+ltrim(st.salename) as secman_code
+		,isnull(st.salename,'') as secman_name
+		,rtrim(st.salecode)+'/'+ltrim(st.salename) as name_full 
+		,isnull(st.salecode,'') as sale_code
+		,isnull(sL.Userid,'') as user_id
+		from npdb.dbo.tb_inc_saleteam as st
+		inner join bcnp.dbo.BCsale as sL on st.salecode = sL.code and sL.activestatus=1
+		where isnull(st.degreecode,'')='L2' and isnull(st.teamstatus,'')<>1 and st.profitcenter in ('S01','S02')
+		and enyear=year(getdate()) and monthofyear=month(getdate())`
+	
+		err = db.Select(&sms,lcCommand)
+	if err !=nil{
+		return nil,err
+	}
+	return sms,nil
 }
 
 
