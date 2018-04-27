@@ -25,6 +25,7 @@ func main() {
 	//promotion
 	app.GET("/requests", ctrl.GetRequestList)
 	app.GET("/promotiontype", ctrl.GetPromotionTypeList)
+	app.GET("/promotionmaster", ctrl.GetPromotionMasterList)
 
 	app.Run(":9010")
 }

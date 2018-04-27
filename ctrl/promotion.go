@@ -76,3 +76,34 @@ func GetPromotionTypeList(l *gin.Context){
 		}
 	}
 }
+
+func GetPromotionMasterList(l *gin.Context){
+
+	log.Println("call Get PromotionMaster List")
+	l.Keys=headerKeys
+
+	promotionmaster := md.Promotionmaster{}
+
+	pm,err := promotionmaster.GetPromotionMaster(dbc)
+	if err != nil{
+		fmt.Println("1")
+		log.Println(err.Error())
+	}
+	rs := api.Response{}
+	if err != nil {
+		rs.Status = "error"
+		rs.Message = "No Content: "+err.Error()
+		l.JSON(http.StatusNotFound, rs)
+	} else {
+		if pm==nil{
+			fmt.Println("2")
+			rs.Status = "error"
+			rs.Message = "No Content: NotData"
+			l.JSON(http.StatusNotFound, rs)
+		}else {
+			rs.Status = "success"
+			rs.Data = pm
+			l.JSON(http.StatusOK, rs)
+		}
+	}
+}

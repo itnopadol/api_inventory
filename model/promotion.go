@@ -51,6 +51,21 @@ type Promotiontype struct{
 	NameFull string `json:"name_full" db:"NameFull"`
 }
 
+type Promotionmaster struct{
+	PmCode string `json:"pm_code" db:"pm_code"`
+	PmName string `json:"pm_name" db:"pm_name"`
+	NameFull string `json:"name_full" db:"name_full"`
+	PmType int `json:"pm_type" db:"pm_type"`
+	DateStart string `json:"date_start" db:"date_start"`
+	DateEnd string `json:"date_end" db:"date_end"`
+	Mydescription string `json:"mydescription" db:"mydescription"`
+	IsCancel int `json:"is_cancel" db:"is_cancel"`
+	CreatorCode string `json:"creator_code" db:"creator_code"`
+	CreateDate string `json:"create_date" db:"create_date"`
+	EditorCode string `json:"editor_code" db:"editor_code"`
+	EditDate string `json:"edit_date" db:"edit_date"`
+}
+
 func(rq *Request)GetByKeyWordRequest(keyword string,db *sqlx.DB)(rqs []*Request,err error){
 	
 	lcCommand := 
@@ -116,7 +131,11 @@ func(rq *Request)GetByKeyWordRequest(keyword string,db *sqlx.DB)(rqs []*Request,
 
 func(pt *Promotiontype)GetPromotionType(db *sqlx.DB)(pts []*Promotiontype,err error){
 
-	lcCommand := `select Code,NameEng,NameThai,Mydescription, Code+'/'+NameEng+'/'+NameThai as NameFull
+	lcCommand := `select Code
+				,NameEng
+				,NameThai
+				,Mydescription
+				, Code+'/'+NameEng+'/'+NameThai as NameFull
 				from Nebula.NPMaster.dbo.TB_PM_Type 
 				order by Code`
 	err = db.Select(&pts,lcCommand)
@@ -124,6 +143,32 @@ func(pt *Promotiontype)GetPromotionType(db *sqlx.DB)(pts []*Promotiontype,err er
 		return nil,err
 	}
 	return pts,nil
+}
+
+func(pm *Promotionmaster)GetPromotionMaster(db *sqlx.DB)(pms []*Promotionmaster,err error){
+
+	lcCommand := `set dateformat dmy
+		select isnull(PMCode,'') as pm_code
+		,isnull(PMName,'') as pm_name
+		,isnull(PMCode+'/'+PMName,'') as name_full
+		,isnull(pm_type,0) as pm_type
+		,isnull(DateStart,'') as date_start
+		,isnull(DateEnd,'') as date_end
+		,isnull(MyDescription,'') as mydescription
+		,isnull(Iscancel,'') as is_cancel
+		,isnull(CreatorCode,'') as creator_code
+		,isnull(CreateDate,'') as create_date
+		,isnull(EditorCode,'') as editor_code
+		,isnull(EditDate,'') as edit_date
+		from NPMaster.dbo.TB_PM_PromotionMaster with(index(PK_TB_PM_PromotionMaster))
+		where cast(dbo.FT_CG_DateToString(DateEnd) as datetime) >= cast(dbo.FT_CG_DateToString(getdate()-7) as datetime)
+		order by RowOrder desc`
+	
+		err = db.Select(&pms,lcCommand)
+	if err !=nil{
+		return nil,err
+	}
+	return pms,nil
 }
 
 
