@@ -90,8 +90,6 @@ func(l *Label)GetByUser(keyword string,branch string,db *sqlx.DB)(ls []*Label,er
 	if err !=nil{
 		return nil,err
 	}
-
-
 	return ls,nil
 }
 

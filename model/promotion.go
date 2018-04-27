@@ -43,6 +43,14 @@ type Requestsub struct{
 	DateEnd string `json:"date_end" db:"date_end"`
 }
 
+type Promotiontype struct{
+	Code string `json:"code" db:"Code"`
+	NameEng string `json:"name_eng" db:"NameEng"`
+	NameThai string `json:"name_thai" db:"NameThai"`
+	Mydescription string `json:"mydescription" db:"Mydescription"`
+	NameFull string `json:"name_full" db:"NameFull"`
+}
+
 func(rq *Request)GetByKeyWordRequest(keyword string,db *sqlx.DB)(rqs []*Request,err error){
 	
 	lcCommand := 
@@ -105,3 +113,17 @@ func(rq *Request)GetByKeyWordRequest(keyword string,db *sqlx.DB)(rqs []*Request,
 	fmt.Println("keyword : ",keyword) 
 	return rqs,nil
 }
+
+func(pt *Promotiontype)GetPromotionType(db *sqlx.DB)(pts []*Promotiontype,err error){
+
+	lcCommand := `select Code,NameEng,NameThai,Mydescription, Code+'/'+NameEng+'/'+NameThai as NameFull
+				from Nebula.NPMaster.dbo.TB_PM_Type 
+				order by Code`
+	err = db.Select(&pts,lcCommand)
+	if err !=nil{
+		return nil,err
+	}
+	return pts,nil
+}
+
+
