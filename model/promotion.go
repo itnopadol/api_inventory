@@ -265,12 +265,37 @@ func (c *checkerror) CheckErrDuplicate(db *sqlx.DB, pmcode string, itemcode stri
 		return err
 	}
 
-	//fmt.Println("IsDuplicate = ",c.IsDuplicate)
+	return nil
+}
+
+func (pm *Promotion) PromotionCancel(db *sqlx.DB) error {
+	if (pm.DocNo != ""){
+		sql := `exec bcnp.dbo.USP_PM_DeletePMRequest ?`
+		_, err := db.Exec(sql, pm.DocNo)
+		if err != nil {
+			return err
+		}
+	}else{
+		return errors.New("DocNo is empty")
+	}
+
 
 	return nil
 }
 
-func (c *checkerror) CancelPromotion(db *sqlx.DB) error {
+func (pm *Promotion)PromotionCancelItem(db *sqlx.DB) error{
+	if(len(pm.Subs) != 0){
+		for _, sub := range pm.Subs {
+			sql := `exec dbo.USP_PM_CancelItemPMRequest ?, ?, ?`
+			_, err := db.Exec(sql, pm.DocNo, sub.ItemCode, sub.UnitCode)
+			if err != nil {
+				return err
+			}
+		}
+	}else{
+		return errors.New("DocNo not have list item cancel")
+	}
+
 
 	return nil
 }

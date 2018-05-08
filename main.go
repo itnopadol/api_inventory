@@ -24,6 +24,9 @@ func main() {
 
 	//promotion
 	app.POST("/promotion", ctrl.InsertAndUpdatePromotion)
+	app.PUT("/promotioncancelitem", ctrl.PromotionCancel)
+	app.PUT("/promotioncancel", ctrl.PromotionCancelItem)
+
 	app.GET("/requests", ctrl.GetRequestList)
 	app.GET("/promotiontype", ctrl.GetPromotionTypeList)
 	app.GET("/promotionmaster", ctrl.GetPromotionMasterList)
