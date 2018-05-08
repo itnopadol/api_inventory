@@ -4,6 +4,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"fmt"
 	//"golang.org/x/tools/go/gcimporter15/testdata"
+	"github.com/kataras/iris/core/errors"
 )
 
 type Promotion struct {
@@ -229,7 +230,7 @@ func (pm *Promotion) InsertAndUpdatePromotion(db *sqlx.DB) error {
 		if err != nil {
 			fmt.Println(err.Error())
 		}
-
+		fmt.Println("IsDuplicate = ",c.IsDuplicate)
 		if (c.IsDuplicate == 0) {
 			if (sub.PromotionType == "11") {
 				hotprice = "S02"
@@ -247,6 +248,8 @@ func (pm *Promotion) InsertAndUpdatePromotion(db *sqlx.DB) error {
 			if err != nil {
 				return err
 			}
+		}else{
+			return errors.New("ItemCode have promotion request")
 		}
 
 	}
@@ -255,13 +258,19 @@ func (pm *Promotion) InsertAndUpdatePromotion(db *sqlx.DB) error {
 }
 
 func (c *checkerror) CheckErrDuplicate(db *sqlx.DB, pmcode string, itemcode string, unitcode string) error {
-	var check_error int = 0
-
-	sqlerr := `exec bcnp.dbo.USP_PM_ItemDuplicate ?,?,?`
-	err := db.Get(&check_error, sqlerr, pmcode, itemcode, unitcode)
+	sqlerr := `exec bcnp.dbo.USP_PM_ItemDuplicate_exist ?, ?, ?`
+	fmt.Println("sqlerror = ",sqlerr, pmcode, itemcode, unitcode)
+	err := db.Get(c, sqlerr, pmcode, itemcode, unitcode)
 	if err != nil {
 		return err
 	}
+
+	//fmt.Println("IsDuplicate = ",c.IsDuplicate)
+
+	return nil
+}
+
+func (c *checkerror) CancelPromotion(db *sqlx.DB) error {
 
 	return nil
 }
