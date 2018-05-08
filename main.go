@@ -11,7 +11,7 @@ import (
 func main() {
 	fmt.Println("BC API Inventory")
 	// 1 = MsSql server , 0 = MySql
-	app := gin.Default()
+	app := gin.New()
 	app.Use(cors.Default())
 
 	// pjc
@@ -23,6 +23,7 @@ func main() {
 	app.GET("/gendocno", ctrl.GenDocno)
 
 	//promotion
+	app.POST("/promotion", ctrl.InsertAndUpdatePromotion)
 	app.GET("/requests", ctrl.GetRequestList)
 	app.GET("/promotiontype", ctrl.GetPromotionTypeList)
 	app.GET("/promotionmaster", ctrl.GetPromotionMasterList)

@@ -10,35 +10,35 @@ import (
 )
 
 //=======================================================API App========================================================
-func GetRequestList(c *gin.Context){
+func GetRequestList(c *gin.Context) {
 
 	log.Println("call GET Request List")
-	c.Keys=headerKeys
+	c.Keys = headerKeys
 	access_token := c.Request.URL.Query().Get("access_token")
-	keyword :=c.Request.URL.Query().Get("keyword")
+	keyword := c.Request.URL.Query().Get("keyword")
 
-	fmt.Println("access_token = ",access_token)
-	request := md.Request{}
+	fmt.Println("access_token = ", access_token)
+	request := md.Promotion{}
 
-	fmt.Println("call Label.GetRequestList :",keyword)
+	fmt.Println("call Label.GetRequestList :", keyword)
 
-	rqs,err := request.GetByKeyWordRequest(keyword,dbc)
-	if err != nil{
+	rqs, err := request.GetByKeyWordRequest(keyword, dbc)
+	if err != nil {
 		fmt.Println("111")
 		log.Println(err.Error())
 	}
 	rs := api.Response{}
 	if err != nil {
 		rs.Status = "error"
-		rs.Message = "No Content: "+err.Error()
+		rs.Message = "No Content: " + err.Error()
 		c.JSON(http.StatusNotFound, rs)
 	} else {
-		if rqs==nil{
+		if rqs == nil {
 			fmt.Println("2")
 			rs.Status = "error"
 			rs.Message = "No Content: NotData"
 			c.JSON(http.StatusNotFound, rs)
-		}else {
+		} else {
 			rs.Status = "success"
 			rs.Data = rqs
 			c.JSON(http.StatusOK, rs)
@@ -46,30 +46,30 @@ func GetRequestList(c *gin.Context){
 	}
 }
 
-func GetPromotionTypeList(l *gin.Context){
+func GetPromotionTypeList(l *gin.Context) {
 
 	log.Println("call Get PromotionType List")
-	l.Keys=headerKeys
+	l.Keys = headerKeys
 
-	promotionType := md.Promotiontype{}
+	promotionType := md.PromotionType{}
 
-	pt,err := promotionType.GetPromotionType(dbc)
-	if err != nil{
+	pt, err := promotionType.GetPromotionType(dbc)
+	if err != nil {
 		fmt.Println("1")
 		log.Println(err.Error())
 	}
 	rs := api.Response{}
 	if err != nil {
 		rs.Status = "error"
-		rs.Message = "No Content: "+err.Error()
+		rs.Message = "No Content: " + err.Error()
 		l.JSON(http.StatusNotFound, rs)
 	} else {
-		if pt==nil{
+		if pt == nil {
 			fmt.Println("2")
 			rs.Status = "error"
 			rs.Message = "No Content: NotData"
 			l.JSON(http.StatusNotFound, rs)
-		}else {
+		} else {
 			rs.Status = "success"
 			rs.Data = pt
 			l.JSON(http.StatusOK, rs)
@@ -77,30 +77,30 @@ func GetPromotionTypeList(l *gin.Context){
 	}
 }
 
-func GetPromotionMasterList(l *gin.Context){
+func GetPromotionMasterList(l *gin.Context) {
 
 	log.Println("call Get PromotionMaster List")
-	l.Keys=headerKeys
+	l.Keys = headerKeys
 
-	promotionmaster := md.Promotionmaster{}
+	promotionmaster := md.PromotionMaster{}
 
-	pm,err := promotionmaster.GetPromotionMaster(dbc)
-	if err != nil{
+	pm, err := promotionmaster.GetPromotionMaster(dbc)
+	if err != nil {
 		fmt.Println("1")
 		log.Println(err.Error())
 	}
 	rs := api.Response{}
 	if err != nil {
 		rs.Status = "error"
-		rs.Message = "No Content: "+err.Error()
+		rs.Message = "No Content: " + err.Error()
 		l.JSON(http.StatusNotFound, rs)
 	} else {
-		if pm==nil{
+		if pm == nil {
 			fmt.Println("2")
 			rs.Status = "error"
 			rs.Message = "No Content: NotData"
 			l.JSON(http.StatusNotFound, rs)
-		}else {
+		} else {
 			rs.Status = "success"
 			rs.Data = pm
 			l.JSON(http.StatusOK, rs)
@@ -108,33 +108,68 @@ func GetPromotionMasterList(l *gin.Context){
 	}
 }
 
-
-func GetSectionManList(l *gin.Context){
+func GetSectionManList(l *gin.Context) {
 
 	log.Println("call Get SectionMan List")
-	l.Keys=headerKeys
+	l.Keys = headerKeys
 
 	sectionman := md.SectionMan{}
 
-	sm,err := sectionman.GetSectionMan(dbc)
-	if err != nil{
+	sm, err := sectionman.GetSectionMan(dbc)
+	if err != nil {
 		fmt.Println("1")
 		log.Println(err.Error())
 	}
 	rs := api.Response{}
 	if err != nil {
 		rs.Status = "error"
-		rs.Message = "No Content: "+err.Error()
+		rs.Message = "No Content: " + err.Error()
 		l.JSON(http.StatusNotFound, rs)
 	} else {
-		if sm==nil{
+		if sm == nil {
 			fmt.Println("2")
 			rs.Status = "error"
 			rs.Message = "No Content: NotData"
 			l.JSON(http.StatusNotFound, rs)
-		}else {
+		} else {
 			rs.Status = "success"
-			rs.Data =sm
+			rs.Data = sm
+			l.JSON(http.StatusOK, rs)
+		}
+	}
+}
+
+func InsertAndUpdatePromotion(l *gin.Context) {
+
+	log.Println("call POST Insert Promotion")
+	l.Keys = headerKeys
+
+	pm := &md.Promotion{}
+
+	err := l.BindJSON(pm)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	err = pm.InsertAndUpdatePromotion(dbc)
+	if err != nil {
+		fmt.Println("1")
+		log.Println(err.Error())
+	}
+	rs := api.Response{}
+	if err != nil {
+		rs.Status = "error"
+		rs.Message = "No Content: " + err.Error()
+		l.JSON(http.StatusNotFound, rs)
+	} else {
+		if pm == nil {
+			fmt.Println("2")
+			rs.Status = "error"
+			rs.Message = "No Content: NotData"
+			l.JSON(http.StatusNotFound, rs)
+		} else {
+			rs.Status = "success"
+			rs.Data = pm
 			l.JSON(http.StatusOK, rs)
 		}
 	}
