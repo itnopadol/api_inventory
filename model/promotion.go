@@ -218,7 +218,7 @@ func (pm *Promotion) InsertAndUpdatePromotion(db *sqlx.DB) error {
 
 	sql := `exec bcnp.dbo.USP_PM_NewInsertRequest ?, ?, ?, ?, ?, ?`
 	fmt.Println("Sql =", sql, pm.CheckJob, pm.DocNo, pm.DocDate, pm.SecMan, pm.PMCode, pm.CreatorCode)
-	_, err := db.Exec(sql, pm.CheckJob, pm.DocNo, pm.StartPromo, pm.SecMan, pm.PMCode, pm.CreatorCode)
+	_, err := db.Exec(sql, pm.CheckJob, pm.DocNo, pm.DocDate, pm.SecMan, pm.PMCode, pm.CreatorCode)
 	if err != nil {
 		return err
 	}
