@@ -191,6 +191,33 @@ func (pm *PromotionMaster) GetPromotionMaster(db *sqlx.DB) (pms []*PromotionMast
 	return pms, nil
 }
 
+
+func (pm *PromotionMaster) GetPromotionMasterByCode(db *sqlx.DB, pmcode string) error {
+
+	lcCommand := `set dateformat dmy
+		select isnull(PMCode,'') as pm_code
+		,isnull(PMName,'') as pm_name
+		,isnull(PMCode+'/'+PMName,'') as name_full
+		,isnull(pm_type,0) as pm_type
+		,isnull(DateStart,'') as date_start
+		,isnull(DateEnd,'') as date_end
+		,isnull(MyDescription,'') as mydescription
+		,isnull(Iscancel,'') as is_cancel
+		,isnull(CreatorCode,'') as creator_code
+		,isnull(CreateDate,'') as create_date
+		,isnull(EditorCode,'') as editor_code
+		,isnull(EditDate,'') as edit_date
+		from NPMaster.dbo.TB_PM_PromotionMaster with(index(PK_TB_PM_PromotionMaster))
+		where isnull(PMCode,'') = ? and cast(dbo.FT_CG_DateToString(DateEnd) as datetime) >= cast(dbo.FT_CG_DateToString(getdate()-7) as datetime)
+		order by RowOrder desc`
+
+	err := db.Get(pm, lcCommand, pmcode)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (sm *SectionMan) GetSectionMan(db *sqlx.DB) (sms []*SectionMan, err error) {
 
 	lcCommand := `set dateformat dmy

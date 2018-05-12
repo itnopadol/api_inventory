@@ -108,6 +108,32 @@ func GetPromotionMasterList(l *gin.Context) {
 	}
 }
 
+func GetPromotionMasterByCode(l *gin.Context) {
+
+	log.Println("call Get PromotionMaster By Code")
+	l.Keys = headerKeys
+
+	pmcode := l.Request.URL.Query().Get("pmcode")
+
+	promotionmaster := md.PromotionMaster{}
+
+	err := promotionmaster.GetPromotionMasterByCode(dbc, pmcode)
+	if err != nil {
+		fmt.Println("1")
+		log.Println(err.Error())
+	}
+	rs := api.Response{}
+	if err != nil {
+		rs.Status = "error"
+		rs.Message = "No Content: " + err.Error()
+		l.JSON(http.StatusNotFound, rs)
+	} else {
+			rs.Status = "success"
+			rs.Data = promotionmaster
+			l.JSON(http.StatusOK, rs)
+	}
+}
+
 func GetSectionManList(l *gin.Context) {
 
 	log.Println("call Get SectionMan List")
