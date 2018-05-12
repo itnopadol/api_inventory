@@ -242,13 +242,23 @@ func (pm *Promotion) InsertAndUpdatePromotion(db *sqlx.DB) error {
 	c := checkerror{}
 
 	fmt.Println("Insert Promotion")
-
 	sql := `exec bcnp.dbo.USP_PM_NewInsertRequest ?, ?, ?, ?, ?, ?`
-	fmt.Println("Sql =", sql, pm.CheckJob, pm.DocNo, pm.DocDate, pm.SecMan, pm.PMCode, pm.CreatorCode)
-	_, err := db.Exec(sql, pm.CheckJob, pm.DocNo, pm.DocDate, pm.SecMan, pm.PMCode, pm.CreatorCode)
-	if err != nil {
-		return err
+
+	if (pm.CheckJob == 0){
+		_, err := db.Exec(sql, pm.CheckJob, pm.DocNo, pm.DocDate, pm.SecMan, pm.PMCode, pm.CreatorCode)
+		if err != nil {
+			return err
+		}
+	}else {
+		_, err := db.Exec(sql, pm.CheckJob, pm.DocNo, pm.DocDate, pm.SecMan, pm.PMCode, pm.EditorCode)
+		if err != nil {
+			return err
+		}
 	}
+	
+	fmt.Println("Sql =", sql, pm.CheckJob, pm.DocNo, pm.DocDate, pm.SecMan, pm.PMCode, pm.CreatorCode)
+
+
 	for _, sub := range pm.Subs {
 		var hotprice string
 

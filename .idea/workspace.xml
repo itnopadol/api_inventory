@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bee55fd7-f2fd-4fed-bd0f-a30aff475a5f" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ctrl/promotion.go" beforeDir="false" afterPath="$PROJECT_DIR$/ctrl/promotion.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/promotion.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/promotion.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,7 +17,7 @@
         <entry file="file://$PROJECT_DIR$/model/promotion.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="312">
-              <caret line="213" column="18" selection-start-line="213" selection-start-column="18" selection-end-line="213" selection-end-column="18" />
+              <caret line="257" column="4" lean-forward="true" selection-start-line="257" selection-start-column="4" selection-end-line="257" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -29,7 +26,7 @@
         <entry file="file://$PROJECT_DIR$/ctrl/promotion.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-215">
-              <caret line="115" column="49" lean-forward="true" selection-start-line="115" selection-start-column="49" selection-end-line="115" selection-end-column="49" />
+              <caret line="115" column="49" selection-start-line="115" selection-start-column="49" selection-end-line="115" selection-end-column="49" />
               <folding>
                 <element signature="e#14#172#0" expanded="true" />
               </folding>
@@ -177,9 +174,9 @@
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32913387" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32913387" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.32913387" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.32913387" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -364,7 +361,7 @@
     <entry file="file://$PROJECT_DIR$/ctrl/promotion.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-215">
-          <caret line="115" column="49" lean-forward="true" selection-start-line="115" selection-start-column="49" selection-end-line="115" selection-end-column="49" />
+          <caret line="115" column="49" selection-start-line="115" selection-start-column="49" selection-end-line="115" selection-end-column="49" />
           <folding>
             <element signature="e#14#172#0" expanded="true" />
           </folding>
@@ -374,7 +371,7 @@
     <entry file="file://$PROJECT_DIR$/model/promotion.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="312">
-          <caret line="213" column="18" selection-start-line="213" selection-start-column="18" selection-end-line="213" selection-end-column="18" />
+          <caret line="257" column="4" lean-forward="true" selection-start-line="257" selection-start-column="4" selection-end-line="257" selection-end-column="4" />
         </state>
       </provider>
     </entry>
