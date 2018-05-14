@@ -201,6 +201,43 @@ func InsertAndUpdatePromotion(l *gin.Context) {
 	}
 }
 
+
+func UpdateHeaderPromotion(l *gin.Context) {
+
+	log.Println("call PUT Update Promotion")
+	l.Keys = headerKeys
+
+	pm := &md.Promotion{}
+
+	err := l.BindJSON(pm)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	err = pm.UpdateHeaderPromotion(dbc)
+	if err != nil {
+		fmt.Println("1")
+		log.Println(err.Error())
+	}
+	rs := api.Response{}
+	if err != nil {
+		rs.Status = "error"
+		rs.Message = "No Content: " + err.Error()
+		l.JSON(http.StatusNotFound, rs)
+	} else {
+		if pm == nil {
+			fmt.Println("2")
+			rs.Status = "error"
+			rs.Message = "No Content: NotData"
+			l.JSON(http.StatusNotFound, rs)
+		} else {
+			rs.Status = "success"
+			rs.Data = pm
+			l.JSON(http.StatusOK, rs)
+		}
+	}
+}
+
 func PromotionCancel(l *gin.Context) {
 
 	log.Println("call PUT Cancel Promotion")

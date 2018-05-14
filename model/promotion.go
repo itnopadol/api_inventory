@@ -255,7 +255,7 @@ func (pm *Promotion) InsertAndUpdatePromotion(db *sqlx.DB) error {
 			return err
 		}
 	}
-	
+
 	fmt.Println("Sql =", sql, pm.CheckJob, pm.DocNo, pm.DocDate, pm.SecMan, pm.PMCode, pm.CreatorCode)
 
 
@@ -268,7 +268,7 @@ func (pm *Promotion) InsertAndUpdatePromotion(db *sqlx.DB) error {
 			fmt.Println(err.Error())
 		}
 		fmt.Println("IsDuplicate = ",c.IsDuplicate)
-		if (c.IsDuplicate == 0) {
+		if ((c.IsDuplicate == 0 && pm.CheckJob == 0) || pm.CheckJob == 1) {
 			if (sub.PromotionType == "11") {
 				hotprice = "S02"
 			} else {
@@ -293,6 +293,31 @@ func (pm *Promotion) InsertAndUpdatePromotion(db *sqlx.DB) error {
 
 	return nil
 }
+
+func (pm *Promotion) UpdateHeaderPromotion(db *sqlx.DB) error {
+	if (pm.IsCancel==0){
+		return errors.New("Docno is cancel")
+	}
+
+	if (pm.IsConfirm != 0 ){
+		return errors.New("Docno is confirm")
+	}
+
+	sql := `Update NPMaster.dbo.TB_PM_Request set secman = ?,pmcode=? where docno = ? and iscancel = 0 and isconfirm = 0`
+	_, err := db.Exec(sql, pm.SecMan, pm.PMCode, pm.DocNo)
+	if err != nil {
+		return err
+	}
+
+	sqlsub := `Update NPMaster.dbo.TB_PM_RequestSub set promotiontype = ? where docno = ?`
+	_, err = db.Exec(sqlsub, pm.DocNo)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 
 func (c *checkerror) CheckErrDuplicate(db *sqlx.DB, pmcode string, itemcode string, unitcode string) error {
 	sqlerr := `exec bcnp.dbo.USP_PM_ItemDuplicate_exist ?, ?, ?`
