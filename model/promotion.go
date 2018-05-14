@@ -101,8 +101,8 @@ func (rq *Promotion) GetByKeyWordRequest(keyword string, db *sqlx.DB) (rqs []*Pr
 			",isnull(EditDate,'') as edit_date" +
 			",isnull(IsCompleteSave,'') as is_complete_save" +
 			" from NPMaster.dbo.TB_PM_Request" +
-			" where isnull(Docno,'') like '%" + keyword + "%' or isnull(SecMan,'') like '%" + keyword + "%'" +
-			" or isnull(PMCode,'') like '%" + keyword + "%' and isnull(iscancel,0) = 0" +
+			" where (isnull(Docno,'') like '%" + keyword + "%' or isnull(SecMan,'') like '%" + keyword + "%'" +
+			" or isnull(PMCode,'') like '%" + keyword + "%') and isnull(iscancel,0) = 0" +
 			" order by DocNo desc"
 
 	err = db.Select(&rqs, lcCommand)
