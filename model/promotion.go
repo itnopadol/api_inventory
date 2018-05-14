@@ -239,6 +239,8 @@ func (sm *SectionMan) GetSectionMan(db *sqlx.DB) (sms []*SectionMan, err error) 
 }
 
 func (pm *Promotion) InsertAndUpdatePromotion(db *sqlx.DB) error {
+	var sqlsub string
+
 	c := checkerror{}
 
 	fmt.Println("Insert Promotion")
@@ -274,12 +276,17 @@ func (pm *Promotion) InsertAndUpdatePromotion(db *sqlx.DB) error {
 			} else {
 				hotprice = ""
 			}
-
-			sqlsub := `exec bcnp.dbo.USP_PM_NewInsertRequestSub ?,?,?,?,?,?,?,1,99999,?,?,?,?,?,0,?,?,?,?,?`
-			_, err = db.Exec(sqlsub, c.IsDuplicate, pm.IsCompleteSave, pm.DocNo, sub.ItemCode, sub.ItemName, sub.UnitCode, sub.Price, sub.Discount, sub.DiscountType, sub.DiscountWord, sub.PromoPrice, sub.Mydescription, sub.LineNumber, sub.IsBrochure, sub.PromoMember, sub.PromotionType, hotprice)
+			if (pm.CheckJob==0) {
+				sqlsub = `exec bcnp.dbo.USP_PM_NewInsertRequestSub 0,?,?,?,?,?,?,1,99999,?,?,?,?,?,0,?,?,?,?,?`
+			} else{
+				sqlsub = `exec bcnp.dbo.USP_PM_UpdateRequestSub 0,?,?,?,?,?,?,1,99999,?,?,?,?,?,0,?,?,?,?,?`
+			}
+			_, err = db.Exec(sqlsub, pm.IsCompleteSave, pm.DocNo, sub.ItemCode, sub.ItemName, sub.UnitCode, sub.Price, sub.Discount, sub.DiscountType, sub.DiscountWord, sub.PromoPrice, sub.Mydescription, sub.LineNumber, sub.IsBrochure, sub.PromoMember, sub.PromotionType, hotprice)
 			if err != nil {
 				return err
 			}
+			fmt.Println("sqlsub = ",sqlsub)
+
 			sqlduplicate := `exec bcnp.dbo.USP_PM_DeleteCheckDuplicatItemLine ?,?,?`
 			_, err = db.Exec(sqlduplicate, pm.DocNo, pm.PMCode, pm.CreatorCode)
 			if err != nil {
@@ -303,7 +310,7 @@ func (pm *Promotion) UpdateHeaderPromotion(db *sqlx.DB) error {
 		return errors.New("Docno is confirm")
 	}
 
-	sql := `Update NPMaster.dbo.TB_PM_Request set secman = ?,pmcode=? where docno = ? and iscancel = 0 and isconfirm = 0`
+	sql := `set dateformat dmy     Update NPMaster.dbo.TB_PM_Request set secman = ?,pmcode=?,editorcode = ?, editdate = getdate() where docno = ? and iscancel = 0 and isconfirm = 0`
 	_, err := db.Exec(sql, pm.SecMan, pm.PMCode, pm.DocNo)
 	if err != nil {
 		return err
