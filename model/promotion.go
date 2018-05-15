@@ -355,7 +355,7 @@ func (pm *Promotion) PromotionCancel(db *sqlx.DB) error {
 func (pm *Promotion)PromotionCancelItem(db *sqlx.DB) error{
 	if(len(pm.Subs) != 0){
 		for _, sub := range pm.Subs {
-			sql := `exec dbo.USP_PM_CancelItemPMRequest ?, ?, ?`
+			sql := `exec bcnp.dbo.USP_PM_CancelItemPMRequest ?, ?, ?`
 			_, err := db.Exec(sql, pm.DocNo, sub.ItemCode, sub.UnitCode)
 			if err != nil {
 				return err
